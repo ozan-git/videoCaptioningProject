@@ -10,9 +10,7 @@ def clip_video(video_path: Path, start_time: float, end_time: float, output_path
     clip_video, clip_audio, info = read_video(str(video_path), start_pts=start_time, end_pts=end_time, pts_unit="sec")
     video_fps = info['video_fps']
     audio_fps = info['audio_fps']
-    write_video(filename=str(output_path), video_array=clip_video, fps=video_fps, audio_array=clip_audio,
-                audio_fps=audio_fps, audio_codec='aac')
-
+    write_video(filename=str(output_path), video_array=clip_video, fps=video_fps)
 
 '''
 videos = Path('./MSRVTT/TestVideo').glob('*')

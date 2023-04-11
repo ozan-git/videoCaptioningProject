@@ -1,7 +1,7 @@
 import json
 import pathlib
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Any
 from urllib.error import HTTPError
 
 import av
@@ -96,7 +96,7 @@ class MSVDDataset:
 
         # Project root Path
         self.root_folder = root_folder if root_folder is not None else Path(
-            'C:/Users/orhan/PycharmProjects/videoCaptioningProject/MSVD')
+            'D:/Users/orhan/pycharmProjects/videoCaptioning/MSVD')
 
         # Drive Path
         self.dataset_folder = self.root_folder / self.name
@@ -109,6 +109,9 @@ class MSVDDataset:
 
         # train visual features Path
         self.train_visual_features_folder = self.dataset_folder / "features_visual_train"
+
+        # train visual features Path for using R3D_18
+        self.train_visual_r3d_feature_folder = self.dataset_folder / "r3d_features_visual_train"
 
         # train audial features Path
         self.train_audial_features_folder = self.dataset_folder / "features_audial_train"
@@ -192,7 +195,7 @@ class MSVDDataset:
             json.dump(status, f)
 
     # download YouTube videos start time to end time from id.
-    def download_video(self, video_id, start_time, end_time, download_folder) -> None:
+    def download_video(self, video_id, start_time, end_time, download_folder) -> tuple[str, bool]:
 
         """
             Download YouTube videos start time to end time from id.
@@ -209,7 +212,7 @@ class MSVDDataset:
                 yt = yt.streams.filter(file_extension="mp4", resolution="360p").first().download(
                     output_path=str(download_folder), filename=video_id)
                 clip_video(video_path=download_video_path, start_time=start_time, end_time=end_time,
-                           output_path=str(clipped_video_path))
+                           output_path=clipped_video_path)
                 download_video_path.unlink()
             print("Downloaded: " + video_id)
             stat = "Available"
@@ -241,10 +244,16 @@ class MSVDDataset:
             paths, captions, ids, start_times, end_times
         """
 
-        train_paths, train_captions, train_ids, val_paths, val_captions, val_ids = load_list(self.annotations,
-                                                                                             self.train_folder)
+        train_paths, train_captions, train_ids, val_paths, val_captions, val_ids =\
+            load_list(self.annotations, self.train_folder, self.val_folder)
+
         train_data = zip(train_paths, train_captions, train_ids)
         val_data = zip(val_paths, val_captions, val_ids)
         test_data = None
 
         return train_data, val_data, test_data
+
+
+if __name__ == '__main__':
+    dataset = MSVDDataset()
+    dataset.download_dataset()

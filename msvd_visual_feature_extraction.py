@@ -98,6 +98,9 @@ class FeatureExtraction:
         self.generator = DataLoader(self.set, **self.params)  # initialize dataloader
         self.max_visual_len = max_visual_len
         self.patch_size = 250
+
+        print(f"Output visual folder: {str(self.output_visual_folder)}")
+
         # create output folders
         if not self.output_visual_folder.exists():
             Path(self.output_visual_folder).mkdir(parents=True, exist_ok=True)
